@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 {
     'name': 'AI Perplexity Provider',
     'version': '19.0.1.0.0',
@@ -11,9 +10,9 @@ AI Perplexity Provider
 Extends the Odoo Enterprise AI module to support Perplexity AI as an additional provider.
 
 Features:
-- Perplexity API integration (Sonar model)
-- Web search capabilities with real-time data
-- Compatible with existing AI infrastructure
+- Perplexity API integration (Sonar model).
+- Web search capabilities with real-time data.
+- Compatible with existing AI infrastructure.
 
 Configuration:
 - Set your Perplexity API key in Settings > General Settings > AI

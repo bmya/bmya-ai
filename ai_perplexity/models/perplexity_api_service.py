@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Perplexity API Service for Odoo
-
-Provides a service class to interact with Perplexity AI API,
-following the same patterns as Odoo's LLMApiService.
-"""
 import json
 import logging
 import os
