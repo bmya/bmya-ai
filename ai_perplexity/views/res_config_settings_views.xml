@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_perplexity" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.ai.perplexity</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="ai.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//setting[@id='google_provider']" position="after">
+                <setting id="perplexity_provider" string="Use your own Perplexity account"
+                         help="Provide your API key to connect with Perplexity AI for web-grounded search"
+                         groups="base.group_system">
+                    <field name="perplexity_key_enabled"/>
+                    <group invisible="not perplexity_key_enabled">
+                        <div class="flex-grow-1">
+                            <field name="perplexity_key" placeholder="pplx-xxxxxxxx..."
+                                   password="True" nolabel="1" class="w-100"/>
+                        </div>
+                    </group>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>
