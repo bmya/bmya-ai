@@ -82,6 +82,8 @@ class PerplexityApiService:
         temperature: float = 0.2,
         max_tokens: int = 1500,
         timeout: int = DEFAULT_TIMEOUT,
+        search_domain_filter: Optional[List[str]] = None,
+        search_recency_filter: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Send a chat completion request to Perplexity.
 
@@ -92,6 +94,8 @@ class PerplexityApiService:
             temperature: Randomness of the response (0-1)
             max_tokens: Maximum tokens in response
             timeout: Request timeout in seconds
+            search_domain_filter: List of domains to focus search on (e.g., ["linkedin.com"])
+            search_recency_filter: Filter by recency: "day", "week", "month", "year"
 
         Returns:
             Dict with 'content' (str), 'citations' (list), and 'usage' (dict)
@@ -118,6 +122,12 @@ class PerplexityApiService:
             "temperature": temperature,
             "max_tokens": max_tokens,
         }
+
+        # Add optional search filters (Perplexity-specific)
+        if search_domain_filter:
+            body["search_domain_filter"] = search_domain_filter
+        if search_recency_filter:
+            body["search_recency_filter"] = search_recency_filter
 
         try:
             response = requests.post(
@@ -221,6 +231,8 @@ Respond with ONLY the category name, nothing else. If uncertain, choose the most
         focus: Optional[str] = None,
         model: str = "sonar-pro",
         max_tokens: int = 2000,
+        search_domain_filter: Optional[List[str]] = None,
+        search_recency_filter: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Perform web research on a topic.
 
@@ -231,6 +243,8 @@ Respond with ONLY the category name, nothing else. If uncertain, choose the most
             focus: Optional focus area for the research
             model: Model to use (sonar-pro recommended for research)
             max_tokens: Maximum response tokens
+            search_domain_filter: List of domains to focus search on
+            search_recency_filter: Filter by recency: "day", "week", "month", "year"
 
         Returns:
             Dict with 'content', 'citations', and structured data if available
@@ -250,7 +264,96 @@ If you cannot find reliable information, say so clearly."""
             temperature=0.1,
             max_tokens=max_tokens,
             timeout=90,  # Research queries may take longer
+            search_domain_filter=search_domain_filter,
+            search_recency_filter=search_recency_filter,
         )
+
+    def structured_search(
+        self,
+        query: str,
+        json_schema: Dict[str, Any],
+        model: str = "sonar-pro",
+        search_domain_filter: Optional[List[str]] = None,
+        search_recency_filter: Optional[str] = None,
+        timeout: int = 90,
+    ) -> Dict[str, Any]:
+        """Perform search and return structured JSON output.
+
+        Uses Perplexity's response_format feature to get structured data.
+
+        Args:
+            query: The search query
+            json_schema: JSON schema defining the expected output structure
+            model: Model to use (sonar-pro recommended)
+            search_domain_filter: List of domains to focus search on
+            search_recency_filter: Filter by recency: "day", "week", "month", "year"
+            timeout: Request timeout in seconds
+
+        Returns:
+            Dict with parsed JSON data and citations
+        """
+        body = {
+            "model": model,
+            "messages": [{"role": "user", "content": query}],
+            "response_format": {
+                "type": "json_schema",
+                "json_schema": {"schema": json_schema}
+            },
+        }
+
+        # Add web search options if provided
+        if search_domain_filter or search_recency_filter:
+            body["web_search_options"] = {}
+            if search_domain_filter:
+                body["web_search_options"]["search_domain_filter"] = search_domain_filter
+            if search_recency_filter:
+                body["web_search_options"]["search_recency_filter"] = search_recency_filter
+
+        try:
+            response = requests.post(
+                f"{self.PERPLEXITY_BASE_URL}/chat/completions",
+                headers=self._get_headers(),
+                json=body,
+                timeout=timeout,
+            )
+            response.raise_for_status()
+            result = response.json()
+
+            # Extract and parse JSON content
+            content = ""
+            if choices := result.get("choices", []):
+                content = choices[0].get("message", {}).get("content", "")
+
+            # Parse JSON from content
+            parsed_data = {}
+            if content:
+                try:
+                    parsed_data = json.loads(content)
+                except json.JSONDecodeError:
+                    _logger.warning("Failed to parse JSON from structured response")
+                    parsed_data = {"raw_content": content}
+
+            return {
+                "data": parsed_data,
+                "citations": result.get("citations", []),
+                "usage": result.get("usage", {}),
+            }
+
+        except requests.exceptions.Timeout:
+            _logger.error("Perplexity API timeout after %ds", timeout)
+            raise UserError(_("Perplexity API request timed out. Please try again."))
+
+        except requests.exceptions.RequestException as e:
+            error_msg = str(e)
+            if e.response is not None:
+                try:
+                    error_data = e.response.json()
+                    error_msg = error_data.get("error", {}).get("message", str(e))
+                except (json.JSONDecodeError, KeyError):
+                    error_msg = e.response.text or str(e)
+
+            _logger.error("Perplexity API error: %s", error_msg)
+            raise UserError(_("Perplexity API error: %s") % error_msg)
 
     def is_available(self) -> bool:
         """Check if Perplexity API is available and configured.
