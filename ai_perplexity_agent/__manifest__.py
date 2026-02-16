@@ -1,9 +1,10 @@
 {
     'name': 'AI Perplexity Agent Provider',
     'version': '19.0.1.0.0',
+    'icon': '/ai_perplexity/static/description/icon.png',
     'category': 'Hidden',
     'summary': 'Adds Perplexity Agent API as a provider for Odoo AI Agents',
-    'author': 'BMyA - Blanco Martín y Asociados',
+    'author': 'Blanco Martín y Asociados SpA',
     'website': 'https://www.bmya.cl',
     'license': 'OPL-1',
     'depends': ['ai', 'ai_app', 'ai_perplexity'],

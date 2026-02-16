@@ -31,7 +31,6 @@ _original_init = LLMApiService.__init__
 _original_get_api_token = LLMApiService._get_api_token
 _original_request_llm = LLMApiService._request_llm
 _original_build_tool_call_response = LLMApiService._build_tool_call_response
-_original_get_embedding = LLMApiService.get_embedding
 
 
 def _patched_init(self, env, provider='openai'):
@@ -275,31 +274,10 @@ def _patched_build_tool_call_response(self, tool_call_id, return_value):
     return _original_build_tool_call_response(self, tool_call_id, return_value)
 
 
-def _patched_get_embedding(self, input, dimensions, model='text-embedding-3-small',
-                           encoding_format=None, user=None):
-    """Redirect embedding requests to OpenAI when provider is perplexity.
-
-    Perplexity has no embedding endpoint. Since the embedding model is set to
-    OpenAI's text-embedding-3-small, we delegate to an OpenAI service instance.
-    """
-    if self.provider == 'perplexity':
-        openai_service = LLMApiService(env=self.env, provider='openai')
-        return openai_service.get_embedding(
-            input=input,
-            dimensions=dimensions,
-            model=model,
-            encoding_format=encoding_format,
-            user=user,
-        )
-    return _original_get_embedding(self, input, dimensions, model, encoding_format, user)
-
-
 # Apply patches
 LLMApiService.__init__ = _patched_init
 LLMApiService._get_api_token = _patched_get_api_token
 LLMApiService._request_llm = _patched_request_llm
 LLMApiService._request_llm_perplexity = _request_llm_perplexity
 LLMApiService._build_tool_call_response = _patched_build_tool_call_response
-LLMApiService.get_embedding = _patched_get_embedding
-
 _logger.info("Perplexity Sonar Chat API patches applied to LLMApiService")
