@@ -1,0 +1,16 @@
+- url: https://${GITHUB_TOKEN}@github.com/bmya/odoo
+  branch: "master"
+  merges:
+    - "origin master"
+- url: https://${GITHUB_TOKEN}@github.com/bmya/enterprise
+  branch: "master"
+  merges:
+    - "origin master"
+- url: https://${GITHUB_TOKEN}@github.com/bmya/design-themes
+  branch: "master"
+  merges:
+    - "origin master"
+- url: https://${GITHUB_TOKEN}@github.com/bmya/odoo-bmya
+  branch: "master"
+  merges:
+    - "origin master"
