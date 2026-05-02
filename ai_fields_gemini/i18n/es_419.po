@@ -1,0 +1,28 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * ai_fields_gemini
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-16 00:00+0000\n"
+"PO-Revision-Date: 2026-02-16 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_419\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: ai_fields_gemini
+#: model:ir.module.module,summary:ai_fields_gemini.module_ai_fields_gemini
+msgid "Enable AI Fields to use Google Gemini when OpenAI is not configured"
+msgstr "Permitir que los campos IA usen Google Gemini cuando OpenAI no está configurado"
+
+#. module: ai_fields_gemini
+#: code:addons/ai_fields_gemini/models/ai_fields_patch.py:0
+#, python-format
+msgid "No AI provider configured. To use AI Fields, configure an API key for OpenAI or Google Gemini in Settings > AI."
+msgstr "No hay proveedor de IA configurado. Para usar campos IA, configure una clave API de OpenAI o Google Gemini en Ajustes > IA."
