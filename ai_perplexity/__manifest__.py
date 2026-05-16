@@ -1,6 +1,6 @@
 {
     'name': 'AI Perplexity Provider',
-    'version': '19.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Hidden',
     'summary': 'Adds Perplexity AI as a provider for Odoo AI features',
     'description': """
@@ -18,7 +18,7 @@ Configuration:
 - Set your Perplexity API key in Settings > General Settings > AI
 - Or use environment variable: ODOO_AI_PERPLEXITY_TOKEN
     """,
-    'author': 'BMyA - Blanco Martín y Asociados',
+    'author': 'Blanco Martín y Asociados SpA',
     'website': 'https://www.bmya.cl',
     'license': 'OPL-1',
     'depends': ['ai'],

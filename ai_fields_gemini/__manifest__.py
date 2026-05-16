@@ -1,6 +1,6 @@
 {
     'name': 'AI Fields Gemini Support',
-    'version': '19.0.1.0.0',
+    'version': '1.0.0',
     'category': 'Hidden',
     'summary': 'Enable AI Fields to use Google Gemini when OpenAI is not configured',
     'author': 'Blanco Martín y Asociados SpA',
