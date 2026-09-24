@@ -1,6 +1,6 @@
 {
     'name': 'AI Perplexity Provider',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Hidden',
     'summary': 'Adds Perplexity AI as a provider for Odoo AI features',
     'description': """
@@ -25,7 +25,7 @@ Configuration:
     'data': [
         'views/res_config_settings_views.xml',
     ],
-    'installable': True,
+    'installable': False,
     'auto_install': False,
     'application': False,
 }
